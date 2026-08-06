@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Here's How I'd Cut a Runaway Snowflake Bill | InferReach</title>
+<meta name="description" content="Five places Snowflake spend actually leaks, in the order I'd check them — with the queries.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%20%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2212%22%20fill%3D%22%23090c10%22/%3E%0A%20%20%3Crect%20x%3D%221%22%20y%3D%221%22%20width%3D%2262%22%20height%3D%2262%22%20rx%3D%2211%22%20fill%3D%22none%22%20stroke%3D%22%231f2833%22%20stroke-width%3D%222%22/%3E%0A%20%20%3Ctext%20x%3D%2232%22%20y%3D%2241%22%20font-family%3D%22IBM%20Plex%20Mono%2C%20ui-monospace%2C%20monospace%22%20font-weight%3D%22700%22%20font-size%3D%2226%22%20fill%3D%22%23e8edf3%22%20text-anchor%3D%22middle%22%3EiR%3C/text%3E%0A%20%20%3Crect%20x%3D%2246%22%20y%3D%2214%22%20width%3D%227%22%20height%3D%227%22%20rx%3D%221.5%22%20fill%3D%22%234ee6a8%22/%3E%0A%3C/svg%3E%0A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#090c10; --surface:#10141b; --surface-2:#161c26;
+    --line:#1f2833; --line-soft:#161d26;
+    --copper:#ff8f4d; --phosphor:#4ee6a8; --blueprint:#5eb3ff;
+    --text:#e8edf3; --muted:#8592a1; --dim:#4b5563;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --sans:'IBM Plex Sans',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.7;}
+  .grid-bg{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:linear-gradient(var(--line-soft) 1px, transparent 1px),linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size:48px 48px;opacity:.3;
+    mask-image:radial-gradient(ellipse 80% 50% at 50% 0%, black 40%, transparent 90%);
+  }
+  a{color:inherit;}
+  nav{position:sticky;top:0;z-index:50;background:rgba(9,12,16,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .nav-inner{max-width:760px;margin:0 auto;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;}
+  .logo{font-family:var(--mono);font-weight:700;font-size:16px;display:flex;align-items:center;gap:8px;text-decoration:none;}
+  .logo i{width:8px;height:8px;background:var(--phosphor);display:inline-block;border-radius:1px;box-shadow:0 0 8px var(--phosphor);}
+  .btn{font-family:var(--mono);font-size:13px;font-weight:600;padding:9px 16px;border-radius:2px;text-decoration:none;background:var(--copper);color:#0a0a0a;}
+  .btn:hover{background:#ffa568;}
+
+  .wrap{max-width:760px;margin:0 auto;padding:0 32px;position:relative;z-index:1;}
+  .back{font-family:var(--mono);font-size:12.5px;color:var(--muted);text-decoration:none;display:inline-flex;gap:8px;margin:40px 0 28px;}
+  .back:hover{color:var(--phosphor);}
+
+  article header{margin-bottom:40px;}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--copper);display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+  .eyebrow::before{content:'';width:16px;height:1px;background:var(--copper);}
+  article h1{font-family:var(--mono);font-size:clamp(26px,4.5vw,38px);line-height:1.2;margin-bottom:14px;}
+  .subhead{color:var(--muted);font-size:16px;font-style:italic;}
+  .meta{font-family:var(--mono);font-size:12px;color:var(--dim);margin-top:18px;}
+
+  article h2{font-family:var(--mono);font-size:20px;color:var(--text);margin:44px 0 16px;padding-top:20px;border-top:1px solid var(--line);}
+  article p{color:#c3ccd6;font-size:16px;margin-bottom:18px;}
+  article strong{color:var(--text);}
+  article em{color:var(--muted);}
+  article ul, article ol{color:#c3ccd6;font-size:16px;margin:0 0 18px 22px;}
+  article li{margin-bottom:8px;}
+  article li::marker{color:var(--copper);}
+
+  pre{
+    background:var(--surface);border:1px solid var(--line);border-radius:6px;
+    padding:18px 20px;overflow-x:auto;margin:20px 0 26px;
+  }
+  code{font-family:var(--mono);font-size:13.5px;color:var(--phosphor);}
+  p code{background:var(--surface-2);padding:2px 6px;border-radius:3px;font-size:14px;}
+
+  hr{border:none;border-top:1px solid var(--line);margin:44px 0 30px;}
+  .cta-block{
+    background:linear-gradient(135deg, var(--surface), var(--surface-2));
+    border:1px solid var(--line);border-radius:8px;padding:28px;margin-bottom:60px;
+  }
+  .cta-block p{margin-bottom:16px;font-size:15px;}
+  .cta-block p:last-child{margin-bottom:0;}
+
+  footer{border-top:1px solid var(--line);padding:32px 0;margin-top:20px;}
+  .footer-inner{max-width:760px;margin:0 auto;padding:0 32px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:var(--mono);font-size:12px;color:var(--dim);}
+  .footer-inner a{color:var(--muted);text-decoration:none;}
+  .footer-inner a:hover{color:var(--phosphor);}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="../index.html"><i></i>inferreach</a>
+    <a class="btn" href="https://cal.com/inferreach/30min">Book Free Audit</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <a class="back" href="../index.html#writing">← back to writing</a>
+
+  <article>
+    <header>
+      <div class="eyebrow">Field notes</div>
+      <h1>Here's How I'd Cut a Runaway Snowflake Bill</h1>
+      <p class="subhead">A field guide to the five places Snowflake spend actually leaks — and what to check first.</p>
+      <div class="meta">2026.08.01 — InferReach</div>
+    </header>
+
+    <p>Every "our Snowflake bill tripled" story I've seen starts the same way: nobody <code>alter</code>ed anything on purpose. Usage just crept. Warehouses got bigger because someone was in a hurry. A dashboard got popular. A dbt job started running hourly instead of daily. Six months later, finance asks why the data team's AWS-adjacent line item is bigger than the data team's payroll.</p>
+    <p>The good news: Snowflake cost problems are almost always structural, not mysterious. You don't need to guess — you need to look in five specific places, in this order.</p>
+
+    <h2>1. Start with WAREHOUSE_METERING_HISTORY, not the invoice</h2>
+    <p>The billing dashboard tells you <em>that</em> you spent money. It won't tell you <em>why</em>. The first move is always:</p>
+    <pre><code>select
+  warehouse_name,
+  date_trunc('day', start_time) as day,
+  sum(credits_used) as credits
+from snowflake.account_usage.warehouse_metering_history
+where start_time &gt;= dateadd('day', -30, current_date)
+group by 1, 2
+order by credits desc;</code></pre>
+    <p>This alone usually explains 60-70% of a spend spike. In most audits I see one of two patterns: either one warehouse is doing 80% of the burn (concentration problem, easy fix), or spend is spread evenly across ten warehouses that all sit idle most of the day (sizing problem, different fix). You need to know which one you have before you touch anything.</p>
+
+    <h2>2. Auto-suspend is set wrong almost everywhere</h2>
+    <p>Snowflake bills per-second once a warehouse is running, but it doesn't shut off by default the way people assume. The default auto-suspend is often left at 10 minutes, or worse, someone bumped it to an hour "to avoid cold-start latency" and never revisited it.</p>
+    <p>That sounds trivial. It isn't. A warehouse that idles for 10 extra minutes after every query, run 200 times a day, is 33 hours of pure waste a day on that warehouse alone. For an interactive BI warehouse serving dashboards, I set auto-suspend to 60 seconds as a default and only raise it if I can show cold-start latency is actually hurting someone. For batch/ETL warehouses, auto-suspend should almost always be immediate — there's no user waiting on it.</p>
+    <pre><code>alter warehouse analytics_wh set auto_suspend = 60;</code></pre>
+    <p>This one setting, applied account-wide, is routinely the single highest-leverage change available — and it takes five minutes.</p>
+
+    <h2>3. Warehouse sizing is usually guessed, not measured</h2>
+    <p>People size warehouses the way they'd size a t-shirt — "this job feels big, give it an XL." But Snowflake credit cost doubles with every size step (X-Small → Small → Medium...), so an oversized warehouse doesn't just cost more, it costs <em>exponentially</em> more for workloads that don't actually parallelize well.</p>
+    <p>The tell is in query profile: if a query on a Large warehouse shows most of its time in a single non-parallelizable step (a big single JOIN, a window function over an unpartitioned dataset), throwing more compute at it doesn't help — you're paying 4x for maybe 1.3x the speed. I look at <code>QUERY_HISTORY</code> for the actual bytes scanned and execution time relative to warehouse size, and downsize anything where the marginal speed gain doesn't justify the credit jump.</p>
+    <pre><code>select
+  warehouse_size,
+  count(*) as query_count,
+  avg(execution_time)/1000 as avg_sec,
+  avg(bytes_scanned) as avg_bytes
+from snowflake.account_usage.query_history
+where start_time &gt;= dateadd('day', -14, current_date)
+group by 1;</code></pre>
+
+    <h2>4. Workload isolation — the "one warehouse for everything" trap</h2>
+    <p>A very common anti-pattern: one warehouse serves dbt runs, ad-hoc analyst queries, <em>and</em> the BI tool's dashboard refreshes. This feels efficient (one thing to manage) but is almost always more expensive, because:</p>
+    <ul>
+      <li>The warehouse has to be sized for the <em>worst</em> workload, so every workload pays that price</li>
+      <li>A heavy analyst query queues behind (or competes with) scheduled jobs, so people bump the size "to be safe" — permanently, for a problem that only happens sometimes</li>
+      <li>You lose the ability to auto-suspend aggressively, because <em>something</em> is always about to run</li>
+    </ul>
+    <p>Splitting into 2-3 purpose-sized warehouses (e.g. a small always-on BI warehouse, a larger batch warehouse that only spins up for scheduled transforms, and an ad-hoc warehouse analysts opt into) routinely costs <em>less</em> in total credits than one shared warehouse sized for the peak case, while also fixing the queueing complaints that got you into oversizing in the first place.</p>
+
+    <h2>5. The quiet one: storage and query patterns compound over time</h2>
+    <p>Compute gets the attention because it's the biggest line item, but two smaller leaks add up:</p>
+    <ul>
+      <li><strong>Time Travel and Fail-safe retention</strong> set to the max (90 days) on tables that don't need it — this multiplies storage cost for no operational benefit on staging/intermediate tables. Dropping retention to 1 day on ephemeral dbt intermediate models is free money.</li>
+      <li><strong><code>select *</code> habits</strong> in dbt models and BI extracts — scanning full-width tables when only a handful of columns are used inflates bytes scanned, which inflates both time and (on certain query patterns) cost. This is a code-review fix, not an infra fix, which is exactly why it never gets caught — nobody's job is to notice it.</li>
+    </ul>
+
+    <h2>What I'd actually do first, in order</h2>
+    <p>If I inherited a Snowflake account with a bill that's grown faster than the business, this is the order of operations, because it's ranked by effort-to-impact:</p>
+    <ol>
+      <li>Pull 30 days of <code>WAREHOUSE_METERING_HISTORY</code>, find the concentration</li>
+      <li>Fix auto-suspend account-wide (same day, near-zero risk)</li>
+      <li>Split any "does everything" warehouse into purpose-sized ones</li>
+      <li>Right-size based on actual query profiles, not vibes</li>
+      <li>Fix retention settings on ephemeral tables</li>
+      <li><em>Then</em> go looking for query-level optimization, because by this point you're optimizing the remaining 20%, not the easy 80%</li>
+    </ol>
+    <p>Most of this is a few days of work, not a re-architecture. The account structure is usually fine — it's just never been looked at with actual usage data since the day someone provisioned it.</p>
+
+    <hr>
+
+    <div class="cta-block">
+      <p>This is the kind of thing we do first on every engagement — a free 20-minute audit, no pitch, just pulling your actual metering history and telling you what we see.</p>
+      <a class="btn" href="https://cal.com/inferreach/30min">Book Your Free Audit</a>
+    </div>
+  </article>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div><a href="../index.html">← inferreach.com</a></div>
+    <div><a href="mailto:hello@inferreach.com">hello@inferreach.com</a></div>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,282 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-  <meta name="format-detection" content="telephone=no"/>
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-  <title>InferReach | Data Engineering, Engineered.</title>
-  <meta name="description" content="End-to-end data engineering for modern companies. Kafka, Spark, dbt, Airflow, Snowflake."/>
-  <meta name="robots" content="index, follow"/>
-  <meta property="og:title" content="InferReach | Data Engineering"/>
-  <meta property="og:description" content="We build the data pipelines that power your business."/>
-  <meta property="og:type" content="website"/>
-  <meta property="og:url" content="https://inferreach.com"/>
-  <meta name="theme-color" content="#0d1117"/>
-  <!-- iR. favicon matching the logo -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHRleHQgeD0iMCIgeT0iMjUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIyNCIgZm9udC13ZWlnaHQ9IjQwMCIgZmlsbD0iI2ZmZmZmZiI+aVIuPC90ZXh0Pgo8L3N2Zz4="/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="style.css"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>InferReach | We'll Be Right Back</title>
+<meta name="description" content="InferReach is rebuilding. Back online soon.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%20%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2212%22%20fill%3D%22%23090c10%22/%3E%0A%20%20%3Crect%20x%3D%221%22%20y%3D%221%22%20width%3D%2262%22%20height%3D%2262%22%20rx%3D%2211%22%20fill%3D%22none%22%20stroke%3D%22%231f2833%22%20stroke-width%3D%222%22/%3E%0A%20%20%3Ctext%20x%3D%2232%22%20y%3D%2241%22%20font-family%3D%22IBM%20Plex%20Mono%2C%20ui-monospace%2C%20monospace%22%20font-weight%3D%22700%22%20font-size%3D%2226%22%20fill%3D%22%23e8edf3%22%20text-anchor%3D%22middle%22%3EiR%3C/text%3E%0A%20%20%3Crect%20x%3D%2246%22%20y%3D%2214%22%20width%3D%227%22%20height%3D%227%22%20rx%3D%221.5%22%20fill%3D%22%234ee6a8%22/%3E%0A%3C/svg%3E%0A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:var(--max-w);margin:0 auto;padding:0 32px}
-.pricing-card{background:var(--bg-1);border:1px solid var(--border-dim);border-radius:8px;padding:32px 28px;position:relative;transition:border-color .2s,transform .2s}
-.pricing-card:hover{border-color:var(--border);transform:translateY(-2px)}
-.pricing-card.featured{border-color:var(--green);background:rgba(0,229,160,.03)}
-.pricing-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--green);color:#000;font-family:var(--font-mono);font-size:.65rem;font-weight:700;padding:3px 14px;border-radius:100px;white-space:nowrap;letter-spacing:.04em}
-.pricing-tag{font-family:var(--font-mono);font-size:.66rem;color:var(--green);text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px}
-.pricing-name{font-family:var(--font-display);font-size:1.2rem;font-weight:700;margin-bottom:8px;color:var(--text-primary)}
-.pricing-desc{font-size:.82rem;color:var(--text-secondary);margin-bottom:24px;line-height:1.6}
-.pricing-price{display:flex;align-items:baseline;gap:4px;margin-bottom:4px}
-.pricing-amount{font-family:var(--font-mono);font-size:2.2rem;font-weight:700;color:var(--text-primary)}
-.pricing-period{font-family:var(--font-mono);font-size:.78rem;color:var(--text-secondary)}
-.pricing-note{font-family:var(--font-mono);font-size:.7rem;color:var(--text-dim);margin-bottom:24px}
-.pricing-features{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:32px}
-.pricing-features li{font-size:.83rem;color:var(--text-secondary);display:flex;align-items:flex-start;gap:10px;line-height:1.5}
-.pricing-features li::before{content:'→';color:var(--green);font-family:var(--font-mono);font-size:.75rem;flex-shrink:0;margin-top:2px}
-.pricing-cta{display:block;width:100%;padding:12px;text-align:center;border-radius:5px;font-family:var(--font-mono);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none}
-.pricing-cta.primary{background:var(--green);color:#000}
-.pricing-cta.primary:hover{filter:brightness(1.1);box-shadow:0 0 20px rgba(0,229,160,.2)}
-.pricing-cta.ghost{background:transparent;border:1px solid var(--border-dim);color:var(--text-secondary)}
-.pricing-cta.ghost:hover{border-color:var(--green);color:var(--green)}
-.pricing-tools{padding:48px 32px 0;max-width:var(--max-w);margin:0 auto;text-align:center}
-.pricing-tools-title{font-family:var(--font-mono);font-size:.72rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
-.tools-row{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
-.btn-product{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border:1px solid var(--border-dim);border-radius:5px;font-family:var(--font-mono);font-size:.72rem;color:var(--text-secondary);transition:all .2s;text-decoration:none}
-.btn-product:hover{border-color:var(--green);color:var(--green)}
-.tool-tag{font-size:.6rem;opacity:.6}
-@media(max-width:900px){.pricing-grid{grid-template-columns:1fr;max-width:420px}}
+  :root{
+    --bg:#090c10; --surface:#10141b; --surface-2:#161c26;
+    --line:#1f2833; --line-soft:#161d26;
+    --copper:#ff8f4d; --phosphor:#4ee6a8; --blueprint:#5eb3ff;
+    --text:#e8edf3; --muted:#8592a1; --dim:#4b5563;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --sans:'IBM Plex Sans',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--bg);color:var(--text);font-family:var(--sans);
+    min-height:100vh;display:flex;flex-direction:column;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important;}
+  }
+
+  .grid-bg{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:linear-gradient(var(--line-soft) 1px, transparent 1px),linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size:48px 48px;opacity:.14;
+    mask-image:radial-gradient(ellipse 60% 50% at 50% 40%, black 30%, transparent 85%);
+  }
+
+  main{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:32px;position:relative;z-index:1;
+  }
+
+  .mark{
+    width:56px;height:56px;border-radius:12px;border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:36px;
+  }
+  .mark span{font-family:var(--mono);font-weight:700;font-size:20px;color:var(--text);}
+  .mark i{position:absolute;top:9px;right:9px;width:6px;height:6px;background:var(--phosphor);border-radius:1px;box-shadow:0 0 8px var(--phosphor);}
+
+  .eyebrow{
+    font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--copper);display:flex;align-items:center;gap:10px;margin-bottom:22px;
+  }
+  .eyebrow::before, .eyebrow::after{content:'';width:16px;height:1px;background:var(--copper);}
+
+  h1{
+    font-family:var(--mono);font-weight:600;letter-spacing:-0.01em;
+    font-size:clamp(28px,5vw,46px);line-height:1.2;max-width:680px;margin-bottom:18px;
+  }
+  h1 .accent{color:var(--phosphor);}
+
+  p.sub{color:var(--muted);font-size:16px;max-width:460px;margin-bottom:40px;line-height:1.6;}
+
+  .status{
+    font-family:var(--mono);font-size:12px;color:var(--dim);
+    display:flex;align-items:center;gap:8px;margin-bottom:44px;
+  }
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--phosphor);box-shadow:0 0 6px var(--phosphor);animation:pulse 1.6s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+  .contact{
+    display:flex;gap:14px;flex-wrap:wrap;justify-content:center;
+  }
+  .btn{
+    font-family:var(--mono);font-size:13px;font-weight:600;
+    padding:12px 22px;border-radius:2px;text-decoration:none;
+    display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
+  }
+  .btn-primary{background:var(--copper);color:#0a0a0a;}
+  .btn-primary:hover{background:#ffa568;}
+  .btn-ghost{border:1px solid var(--line);color:var(--text);}
+  .btn-ghost:hover{border-color:var(--muted);}
+
+  footer{
+    position:relative;z-index:1;padding:26px 32px;border-top:1px solid var(--line-soft);
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+    font-family:var(--mono);font-size:11.5px;color:var(--dim);
+  }
+  footer a{color:var(--muted);text-decoration:none;}
+  footer a:hover{color:var(--phosphor);}
 </style>
 </head>
 <body>
 
-<!-- Page Loader -->
-<div id="loader">
-  <div class="loader-inner">
-    <div class="loader-logo">iR.</div>
-    <div class="loader-pipeline">
-      <div class="lp-node" id="ln1">SRC</div>
-      <div class="lp-track"><div class="lp-particle" id="lpar1"></div></div>
-      <div class="lp-node" id="ln2">ETL</div>
-      <div class="lp-track"><div class="lp-particle" id="lpar2"></div></div>
-      <div class="lp-node" id="ln3">DWH</div>
-    </div>
-    <div class="loader-status" id="loaderStatus">initializing pipeline...</div>
-  </div>
-</div>
+<div class="grid-bg"></div>
 
-<!-- Navigation -->
-<nav class="nav">
-  <div class="nav-inner">
-    <a href="#" class="nav-logo"><span style="color:var(--green)">[</span>inferreach<span style="color:var(--green)">]</span></a>
-    <ul class="nav-links">
-      <li><a href="#pipelines">Services</a></li>
-      
-      <li><a href="#stack">Stack</a></li>
-      <li><a href="#audit">Free Audit</a></li>
-    </ul>
-    <div class="nav-cta">
-      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-        <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      </button>
-      <span class="status-dot-nav"></span>
-      <a href="https://cal.com/inferreach/30min" target="_blank" rel="noopener" class="btn-primary">Book Free Audit</a>
-    </div>
-  </div>
-</nav>
+<main>
+  <div class="mark"><span>iR</span><i></i></div>
 
-<!-- Hero -->
-<section class="hero" id="home">
-  <div class="hero-grid-bg"></div>
-  <div class="hero-terminal-bar">
-    <span class="terminal-prompt">inferreach@prod:~$</span>
-    <span class="terminal-cmd" id="typewriter"></span>
-    <span class="cursor blink">█</span>
-  </div>
-  <div class="hero-content">
-    <div class="hero-badge">
-      <span class="badge-dot"></span>
-      <span>Data engineering for companies that move fast</span>
-    </div>
-    <h1 class="hero-title">
-      <span class="title-line">We Build the</span>
-      <span class="title-line accent-line">Data Arteries</span>
-      <span class="title-line">of Modern Business</span>
-    </h1>
-    <p class="hero-sub">
-      End-to-end data engineering. From raw source chaos to warehouse-ready,
-      insight-primed pipelines. Kafka, Spark, dbt, Airflow. We speak the language
-      of your data infrastructure.
-    </p>
-    <div class="hero-actions">
-      <a href="https://cal.com/inferreach/30min" target="_blank" rel="noopener" class="btn-primary btn-large">
-        <span>Book a Free Data Audit</span>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-      <a href="/demo-platform" target="_blank" rel="noopener" class="btn-ghost btn-large"><span>View Demo Platform</span></a>
-    </div>
-  </div>
+  <div class="eyebrow">Under construction</div>
 
-  <div class="pipeline-viz">
-    <div class="pipeline-label">live pipeline flow</div>
-    <canvas id="pipelineCanvas"></canvas>
-    <div class="pipeline-legend">
-      <span class="leg-item"><span class="leg-dot green"></span>ingestion</span>
-      <span class="leg-item"><span class="leg-dot yellow"></span>transform</span>
-      <span class="leg-item"><span class="leg-dot blue"></span>load</span>
-      <span class="leg-item"><span class="leg-dot orange"></span>alert</span>
-    </div>
-  </div>
-</section>
+  <h1>We're rebuilding the <span class="accent">arteries</span> of inferreach.com.</h1>
+  <p class="sub">The site is getting a full rebuild. Same team, same work, better home for it. Back online shortly.</p>
 
-<!-- Services -->
-<section class="services" id="pipelines">
-  <div class="section-header">
-    <div class="section-tag">Services</div>
-    <h2 class="section-title">What We Build</h2>
-    <p class="section-sub">Every data problem is an architecture problem. We solve both.</p>
-  </div>
-  <div class="services-grid">
-    <div class="service-card card-accent">
-      <div class="card-icon"><svg width="28" height="28" viewBox="0 0 32 32" fill="none"><path d="M4 8h24M4 8v16h24V8M4 8l12 8 12-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-      <div class="card-tag">ingestion</div>
-      <h3>Real-Time Data Ingestion</h3>
-      <p>Kafka-powered event streaming, CDC pipelines, webhook collectors, and batch ingestion at any scale. Sub-second latency from source to sink.</p>
-      <ul class="card-specs"><li><span>Kafka / Kinesis / Pub-Sub</span></li><li><span>CDC via Debezium</span></li><li><span>Multi-source fan-in</span></li><li><span>Low-latency end-to-end</span></li></ul>
-    </div>
-    <div class="service-card">
-      <div class="card-icon"><svg width="28" height="28" viewBox="0 0 32 32" fill="none"><rect x="4" y="4" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="18" y="4" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="4" y="18" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="18" y="18" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/><path d="M9 14v4M23 14v4M14 9h4M14 23h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-      <div class="card-tag">transform</div>
-      <h3>Data Transformation Layers</h3>
-      <p>dbt-powered modular SQL transformations, Spark jobs for heavy ETL, and streaming transforms with Flink. Clean data contracts every step.</p>
-      <ul class="card-specs"><li><span>dbt Core + Cloud</span></li><li><span>PySpark / Scala Spark</span></li><li><span>Apache Flink</span></li><li><span>Data lineage tracking</span></li></ul>
-    </div>
-    <div class="service-card">
-      <div class="card-icon"><svg width="28" height="28" viewBox="0 0 32 32" fill="none"><ellipse cx="16" cy="9" rx="10" ry="4" stroke="currentColor" stroke-width="1.5"/><path d="M6 9v7c0 2.21 4.48 4 10 4s10-1.79 10-4V9" stroke="currentColor" stroke-width="1.5"/><path d="M6 16v7c0 2.21 4.48 4 10 4s10-1.79 10-4v-7" stroke="currentColor" stroke-width="1.5"/></svg></div>
-      <div class="card-tag">warehouse</div>
-      <h3>Cloud Data Warehousing</h3>
-      <p>Snowflake, BigQuery, and Redshift architecture, optimization, and cost engineering. We turn runaway compute bills into efficient, predictable spend.</p>
-      <ul class="card-specs"><li><span>Snowflake / BigQuery / Redshift</span></li><li><span>Lakehouse on Delta / Iceberg</span></li><li><span>Query optimization</span></li><li><span>Cost governance</span></li></ul>
-    </div>
-    <div class="service-card">
-      <div class="card-icon"><svg width="28" height="28" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M16 8v8l5 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-      <div class="card-tag">orchestration</div>
-      <h3>Pipeline Orchestration</h3>
-      <p>Airflow DAGs that actually work. Prefect flows, Dagster assets. We build orchestration that handles failures gracefully and alerts that make sense.</p>
-      <ul class="card-specs"><li><span>Apache Airflow 2.x</span></li><li><span>Prefect / Dagster</span></li><li><span>SLA monitoring</span></li><li><span>Smart retry strategies</span></li></ul>
-    </div>
-    <div class="service-card">
-      <div class="card-icon"><svg width="28" height="28" viewBox="0 0 32 32" fill="none"><path d="M4 24l8-8 6 6 4-8 6 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <div class="card-tag">observability</div>
-      <h3>Data Quality & Observability</h3>
-      <p>Great Expectations checks, Monte Carlo integration, custom anomaly detection. Know when your data breaks before your stakeholders do.</p>
-      <ul class="card-specs"><li><span>Great Expectations</span></li><li><span>Monte Carlo / Soda</span></li><li><span>Schema evolution alerts</span></li><li><span>Freshness SLAs</span></li></ul>
-    </div>
-    <div class="service-card">
-      <div class="card-icon"><svg width="28" height="28" viewBox="0 0 32 32" fill="none"><path d="M8 28V16M14 28V10M20 28V4M26 28V13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-      <div class="card-tag">ml-infra</div>
-      <h3>ML & Feature Pipelines</h3>
-      <p>Feature stores, training data pipelines, model serving infra. Bridge the gap between data engineering and machine learning.</p>
-      <ul class="card-specs"><li><span>Feast / Tecton feature stores</span></li><li><span>MLflow / Kubeflow</span></li><li><span>Point-in-time correct joins</span></li><li><span>Batch + streaming features</span></li></ul>
-    </div>
-  </div>
-</section>
+  <div class="status"><span class="live-dot"></span>rebuild in progress</div>
 
-<!-- Stack -->
-<section class="stack" id="stack">
-  <div class="section-header">
-    <div class="section-tag">Stack</div>
-    <h2 class="section-title">The Full Stack</h2>
-    <p class="section-sub">We work with the tools your team already uses, and introduce the ones they should.</p>
+  <div class="contact">
+    <a class="btn btn-primary" href="mailto:hello@inferreach.com">Email Us</a>
+    <a class="btn btn-ghost" href="https://cal.com/inferreach/30min">Book a Free Audit</a>
   </div>
-  <div class="stack-layers">
-    <div class="stack-layer"><div class="layer-label">INGEST</div><div class="layer-items"><div class="stack-chip">Apache Kafka</div><div class="stack-chip">AWS Kinesis</div><div class="stack-chip">Pub/Sub</div><div class="stack-chip">Fivetran</div><div class="stack-chip">Airbyte</div><div class="stack-chip">Debezium</div><div class="stack-chip">Stitch</div></div></div>
-    <div class="layer-arrow"><svg width="20" height="40" viewBox="0 0 20 40"><path d="M10 0v36M4 30l6 8 6-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-    <div class="stack-layer"><div class="layer-label">TRANSFORM</div><div class="layer-items"><div class="stack-chip active">dbt Core</div><div class="stack-chip active">Apache Spark</div><div class="stack-chip active">Apache Flink</div><div class="stack-chip">Pandas</div><div class="stack-chip">Polars</div><div class="stack-chip">duckDB</div></div></div>
-    <div class="layer-arrow"><svg width="20" height="40" viewBox="0 0 20 40"><path d="M10 0v36M4 30l6 8 6-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-    <div class="stack-layer"><div class="layer-label">STORE</div><div class="layer-items"><div class="stack-chip active">Snowflake</div><div class="stack-chip active">BigQuery</div><div class="stack-chip">Databricks</div><div class="stack-chip">Redshift</div><div class="stack-chip">Delta Lake</div><div class="stack-chip">Apache Iceberg</div><div class="stack-chip">Hudi</div></div></div>
-    <div class="layer-arrow"><svg width="20" height="40" viewBox="0 0 20 40"><path d="M10 0v36M4 30l6 8 6-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-    <div class="stack-layer"><div class="layer-label">ORCHESTRATE</div><div class="layer-items"><div class="stack-chip active">Apache Airflow</div><div class="stack-chip">Prefect</div><div class="stack-chip">Dagster</div><div class="stack-chip">Mage</div><div class="stack-chip">Argo Workflows</div></div></div>
-    <div class="layer-arrow"><svg width="20" height="40" viewBox="0 0 20 40"><path d="M10 0v36M4 30l6 8 6-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-    <div class="stack-layer"><div class="layer-label">OBSERVE</div><div class="layer-items"><div class="stack-chip">Great Expectations</div><div class="stack-chip">Monte Carlo</div><div class="stack-chip">Grafana</div><div class="stack-chip">Prometheus</div><div class="stack-chip">OpenTelemetry</div><div class="stack-chip">Soda Core</div></div></div>
-    <div class="layer-arrow"><svg width="20" height="40" viewBox="0 0 20 40"><path d="M10 0v36M4 30l6 8 6-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-    <div class="stack-layer"><div class="layer-label">INFRA</div><div class="layer-items"><div class="stack-chip">Kubernetes</div><div class="stack-chip">Terraform</div><div class="stack-chip">AWS / GCP / Azure</div><div class="stack-chip">Helm</div><div class="stack-chip">Docker</div><div class="stack-chip">GitHub Actions</div></div></div>
-  </div>
-</section>
+</main>
 
-<!-- Process -->
-<section class="process">
-  <div class="section-header">
-    <div class="section-tag">Process</div>
-    <h2 class="section-title">How We Work</h2>
-  </div>
-  <div class="process-steps">
-    <div class="process-step"><div class="step-num">01</div><div class="step-line"></div><div class="step-content"><h3>Discovery & Audit</h3><p>We map your current data landscape: sources, flows, pain points, scale requirements. Two weeks, full technical audit.</p><div class="step-tag">~2 weeks</div></div></div>
-    <div class="process-step"><div class="step-num">02</div><div class="step-line"></div><div class="step-content"><h3>Architecture Design</h3><p>A battle-tested architecture proposal with tech stack, cost projections, and migration path. No surprises.</p><div class="step-tag">~1 week</div></div></div>
-    <div class="process-step"><div class="step-num">03</div><div class="step-line"></div><div class="step-content"><h3>Build & Migrate</h3><p>Parallel build with zero-downtime migration. We run old and new simultaneously until you're confident.</p><div class="step-tag">4–16 weeks</div></div></div>
-    <div class="process-step"><div class="step-num">04</div><div class="step-content"><h3>Monitor & Scale</h3><p>Ongoing support, 24/7 alerting, quarterly reviews. Your team learns, your infrastructure grows.</p><div class="step-tag">ongoing</div></div></div>
-  </div>
-</section>
-
-
-<!-- Audit CTA -->
-<section class="audit-cta" id="audit">
-  <div class="audit-cta-inner">
-    <div class="audit-cta-tag">Get Started</div>
-    <h2 class="audit-cta-title">Not sure where your data stack stands?<br><span style="color:var(--green)">Let's find out together.</span></h2>
-    <p class="audit-cta-sub">
-      Book a <strong>free 20-minute data audit</strong> and we'll walk through your current setup, identify what's costing you time or money, and outline what a clean, scalable stack would look like for your team. No sales pitch. Just a technical conversation.
-    </p>
-    <div class="audit-features">
-      <span class="audit-feature">Review your current stack</span>
-      <span class="audit-feature">Identify pipeline bottlenecks</span>
-      <span class="audit-feature">Get a concrete action plan</span>
-    </div>
-    <a href="https://cal.com/inferreach/30min" target="_blank" rel="noopener" class="btn-primary btn-large">
-      <span>Book Your Free Audit</span>
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
-    <p class="audit-note">Engagements are scoped based on your stack and goals. We'll figure out what makes sense on the call.</p>
-  </div>
-</section>
-
-<!-- Footer -->
-<footer class="footer">
-  <div class="footer-inner">
-    <div class="footer-brand">
-      <a href="#" class="nav-logo"><span style="color:var(--green)">[</span>inferreach<span style="color:var(--green)">]</span></a>
-      <p class="footer-tagline">Data pipelines that actually work.</p>
-      
-      <a href="mailto:hello@inferreach.com" class="footer-email">hello@inferreach.com</a>
-    </div>
-    <div class="footer-nav">
-      <div class="footer-col">
-        <span class="fc-head">Services</span>
-        <a href="#pipelines">Ingestion</a>
-        <a href="#pipelines">Transformation</a>
-        <a href="#pipelines">Warehousing</a>
-        <a href="#pipelines">ML Infra</a>
-        <a href="#pipelines">Orchestration</a>
-      </div>
-      <div class="footer-col">
-        <span class="fc-head">Navigate</span>
-        <a href="#pipelines">What We Build</a>
-        
-        <a href="#stack">Tech Stack</a>
-        <a href="#process">Process</a>
-        <a href="#audit">Free Audit</a>
-      </div>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span class="footer-copy">© 2026 InferReach. All rights reserved.</span>
-  </div>
+<footer>
+  <div>© 2026 InferReach</div>
+  <div><a href="mailto:hello@inferreach.com">hello@inferreach.com</a></div>
 </footer>
 
-<script src="main.js"></script>
 </body>
 </html>

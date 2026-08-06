@@ -1,4 +1,4 @@
-import {
+zimport {
 	env,
 	createExecutionContext,
 	waitOnExecutionContext,
