@@ -1,6 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="12" fill="#090c10"/>
-  <rect x="1" y="1" width="62" height="62" rx="11" fill="none" stroke="#1f2833" stroke-width="2"/>
-  <text x="32" y="41" font-family="IBM Plex Mono, ui-monospace, monospace" font-weight="700" font-size="26" fill="#e8edf3" text-anchor="middle">iR</text>
-  <rect x="46" y="14" width="7" height="7" rx="1.5" fill="#4ee6a8"/>
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0d10;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#141b21;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffb454;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e69a3a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background circle -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bgGrad)" stroke="#212a31" stroke-width="2" />
+
+  <!-- Subtle glow ring -->
+  <rect x="4" y="4" width="56" height="56" rx="12" fill="none" stroke="url(#accentGrad)" stroke-width="0.8" opacity="0.3" />
+
+  <!-- "i" - lowercase i -->
+  <circle cx="22" cy="22" r="3" fill="url(#accentGrad)" />
+  <rect x="19" y="28" width="6" height="18" rx="2" fill="url(#accentGrad)" />
+
+  <!-- "R" - uppercase R -->
+  <path d="M34 46 L34 28 L42 28 C47 28 47 32 42 33 L46 46 L40 46 L37 35 L34 35 L34 46 Z" fill="url(#accentGrad)" />
+  <rect x="34" y="28" width="8" height="6" rx="1.5" fill="url(#accentGrad)" />
+
+  <!-- Small accent dot (brand mark) -->
+  <circle cx="52" cy="14" r="2.5" fill="url(#accentGrad)" opacity="0.6" />
 </svg>
