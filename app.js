@@ -1,411 +1,274 @@
-// ============================================================
-// 1. PARTICLE NETWORK CANVAS (Data Pipeline Visualization)
-// ============================================================
-(function initCanvas() {
-    const canvas = document.getElementById('particle-canvas');
+// =========================================================
+// INFERREACH — main script
+// =========================================================
+
+(function () {
+  'use strict';
+
+  // ============ NAV TOGGLE ============
+  const navToggle = document.getElementById('nav-toggle');
+  const mainNav = document.getElementById('main-nav');
+
+  if (navToggle && mainNav) {
+    navToggle.addEventListener('click', function () {
+      const expanded = this.getAttribute('aria-expanded') === 'true' ? false : true;
+      this.setAttribute('aria-expanded', expanded);
+      mainNav.style.display = expanded ? 'flex' : '';
+      if (expanded) {
+        mainNav.style.flexDirection = 'column';
+        mainNav.style.position = 'absolute';
+        mainNav.style.top = '68px';
+        mainNav.style.left = '0';
+        mainNav.style.right = '0';
+        mainNav.style.background = 'var(--bg-panel)';
+        mainNav.style.padding = '20px 28px';
+        mainNav.style.borderBottom = '1px solid var(--border-soft)';
+        mainNav.style.gap = '16px';
+        mainNav.style.alignItems = 'flex-start';
+      } else {
+        mainNav.style.display = '';
+        mainNav.style.flexDirection = '';
+        mainNav.style.position = '';
+        mainNav.style.top = '';
+        mainNav.style.left = '';
+        mainNav.style.right = '';
+        mainNav.style.background = '';
+        mainNav.style.padding = '';
+        mainNav.style.borderBottom = '';
+        mainNav.style.gap = '';
+        mainNav.style.alignItems = '';
+      }
+    });
+
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 720 && mainNav.style.display === 'flex') {
+        mainNav.style.display = '';
+        mainNav.style.flexDirection = '';
+        mainNav.style.position = '';
+        mainNav.style.top = '';
+        mainNav.style.left = '';
+        mainNav.style.right = '';
+        mainNav.style.background = '';
+        mainNav.style.padding = '';
+        mainNav.style.borderBottom = '';
+        mainNav.style.gap = '';
+        mainNav.style.alignItems = '';
+        navToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  // ============ SCROLL REVEAL ============
+  const revealElements = document.querySelectorAll('[data-reveal]');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -20px 0px' });
+
+  revealElements.forEach(el => revealObserver.observe(el));
+
+  // ============ STATS COUNTER ANIMATION ============
+  const statNumbers = document.querySelectorAll('.stat-number');
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseFloat(el.getAttribute('data-count'));
+        const suffix = el.getAttribute('data-suffix') || '';
+        const duration = 2000;
+        const startTime = performance.now();
+
+        function updateCounter(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = eased * target;
+          let display;
+          if (Number.isInteger(target)) {
+            display = Math.floor(current);
+          } else {
+            display = current.toFixed(1);
+          }
+          el.textContent = display + suffix;
+          if (progress < 1) {
+            requestAnimationFrame(updateCounter);
+          } else {
+            el.textContent = target + suffix;
+          }
+        }
+        requestAnimationFrame(updateCounter);
+        counterObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  statNumbers.forEach(el => counterObserver.observe(el));
+
+  // ============ FLOW CANVAS ============
+  const canvas = document.getElementById('flow-canvas');
+  if (canvas) {
     const ctx = canvas.getContext('2d');
-    let width, height, dpr;
-    let nodes = [];
-    let pulses = [];
-    let mouseX = -9999;
-    let mouseY = -9999;
-    let animationId;
+    let width, height;
+    const dpr = window.devicePixelRatio || 1;
 
-    class Node {
-        constructor(x, y, isHub = false) {
-            this.x = x;
-            this.y = y;
-            this.vx = (Math.random() - 0.5) * 0.25;
-            this.vy = (Math.random() - 0.5) * 0.25;
-            this.radius = isHub ? Math.random() * 2.5 + 2.5 : Math.random() * 1.5 + 1;
-            this.isHub = isHub;
-            this.baseRadius = this.radius;
-            this.glowPhase = Math.random() * Math.PI * 2;
-            this.glowSpeed = Math.random() * 0.02 + 0.01;
-            this.hue = isHub ?
-                Math.random() * 40 + 170 :
-                Math.random() * 60 + 220;
-            this.saturation = 85;
-            this.lightness = 65;
-        }
+    const nodes = [
+      { id: 'source', label: 'Source', x: 0.15, y: 0.5 },
+      { id: 'transform', label: 'Transform', x: 0.5, y: 0.5 },
+      { id: 'sink', label: 'Sink', x: 0.85, y: 0.5 },
+    ];
 
-        update(bounds) {
-            this.x += this.vx;
-            this.y += this.vy;
-            this.glowPhase += this.glowSpeed;
+    let particles = [];
+    const MAX_PARTICLES = 20;
+    const PARTICLE_SPEED = 0.003;
 
-            const margin = 20;
-            if (this.x < margin || this.x > bounds.width - margin) {
-                this.vx *= -1;
-                this.x = Math.max(margin, Math.min(bounds.width - margin, this.x));
-            }
-            if (this.y < margin || this.y > bounds.height - margin) {
-                this.vy *= -1;
-                this.y = Math.max(margin, Math.min(bounds.height - margin, this.y));
-            }
-
-            const dx = this.x - mouseX;
-            const dy = this.y - mouseY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            const repelRadius = 120;
-            if (dist < repelRadius && dist > 0.1) {
-                const force = (repelRadius - dist) / repelRadius * 0.8;
-                this.vx += (dx / dist) * force * 0.3;
-                this.vy += (dy / dist) * force * 0.3;
-                const maxV = 1.2;
-                const v = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-                if (v > maxV) {
-                    this.vx = (this.vx / v) * maxV;
-                    this.vy = (this.vy / v) * maxV;
-                }
-            } else {
-                this.vx *= 0.998;
-                this.vy *= 0.998;
-            }
-
-            const pulse = Math.sin(this.glowPhase) * 0.4 + 1;
-            this.radius = this.baseRadius * pulse;
-        }
-
-        draw(ctx) {
-            const glow = 0.5 + Math.sin(this.glowPhase) * 0.3;
-            const alpha = this.isHub ? 0.9 * glow : 0.55 * glow;
-            const r = this.radius;
-
-            const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, r * 4);
-            gradient.addColorStop(0,
-                `hsla(${this.hue}, ${this.saturation}%, ${this.lightness}%, ${alpha * 0.6})`);
-            gradient.addColorStop(1, 'transparent');
-            ctx.fillStyle = gradient;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, r * 4, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.fillStyle =
-                `hsla(${this.hue}, ${this.saturation}%, ${Math.min(this.lightness + 15, 90)}%, ${alpha})`;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, r, 0, Math.PI * 2);
-            ctx.fill();
-        }
+    function resize() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      ctx.scale(dpr, dpr);
     }
 
-    class Pulse {
-        constructor(nodeA, nodeB) {
-            this.nodeA = nodeA;
-            this.nodeB = nodeB;
-            this.t = Math.random();
-            this.speed = Math.random() * 0.012 + 0.006;
-            this.size = Math.random() * 2 + 1.2;
-            this.hue = Math.random() * 40 + 170;
-            this.active = true;
-        }
-
-        update() {
-            this.t += this.speed;
-            if (this.t >= 1) {
-                this.active = false;
-                if (Math.random() < 0.4) {
-                    createPulseFromRandomConnection();
-                }
-            }
-        }
-
-        draw(ctx) {
-            if (!this.active || !this.nodeA || !this.nodeB) return;
-            const x = this.nodeA.x + (this.nodeB.x - this.nodeA.x) * this.t;
-            const y = this.nodeA.y + (this.nodeB.y - this.nodeA.y) * this.t;
-
-            const trailGrad = ctx.createRadialGradient(x, y, 0, x, y, this.size * 5);
-            trailGrad.addColorStop(0, `hsla(${this.hue}, 100%, 80%, 0.7)`);
-            trailGrad.addColorStop(0.4, `hsla(${this.hue}, 100%, 70%, 0.25)`);
-            trailGrad.addColorStop(1, 'transparent');
-            ctx.fillStyle = trailGrad;
-            ctx.beginPath();
-            ctx.arc(x, y, this.size * 5, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.fillStyle = `hsla(${this.hue}, 100%, 85%, 0.9)`;
-            ctx.beginPath();
-            ctx.arc(x, y, this.size, 0, Math.PI * 2);
-            ctx.fill();
-        }
+    function getNodePos(node) {
+      return { x: node.x * width, y: node.y * height };
     }
 
-    let connections = [];
+    function drawNode(node, color = '#ffb454') {
+      const pos = getNodePos(node);
+      const radius = Math.min(width, height) * 0.045;
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.strokeStyle = '#212a31';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
 
-    function createPulseFromRandomConnection() {
-        if (connections.length === 0) return;
-        const conn = connections[Math.floor(Math.random() * connections.length)];
-        const pulse = new Pulse(conn[0], conn[1]);
-        pulses.push(pulse);
+      ctx.fillStyle = '#8b96a3';
+      ctx.font = `${Math.min(width, height) * 0.028}px "Inter", sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(node.label, pos.x, pos.y - radius - 8);
     }
 
-    function resizeCanvas() {
-        dpr = Math.min(window.devicePixelRatio || 1, 2);
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
-        canvas.style.width = width + 'px';
-        canvas.style.height = height + 'px';
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        initNodes();
+    function drawEdge(from, to, color = '#212a31') {
+      const p1 = getNodePos(from);
+      const p2 = getNodePos(to);
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.stroke();
     }
 
-    function initNodes() {
-        nodes = [];
-        pulses = [];
-        connections = [];
-        const nodeCount = width < 768 ? 35 : 65;
-        const hubCount = Math.max(3, Math.floor(nodeCount * 0.12));
-
-        for (let i = 0; i < nodeCount; i++) {
-            const isHub = i < hubCount;
-            const x = Math.random() * width;
-            const y = Math.random() * height;
-            nodes.push(new Node(x, y, isHub));
-        }
-
-        for (let i = 0; i < 12; i++) {
-            setTimeout(() => {
-                if (connections.length > 0) {
-                    createPulseFromRandomConnection();
-                }
-            }, i * 300);
-        }
+    function drawParticles() {
+      particles.forEach(p => {
+        const pos = p.position;
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#4fd1c5';
+        ctx.shadowColor = '#4fd1c5';
+        ctx.shadowBlur = 12;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      });
     }
 
-    function findConnections() {
-        connections = [];
-        const maxDist = width < 768 ? 110 : 150;
-        for (let i = 0; i < nodes.length; i++) {
-            for (let j = i + 1; j < nodes.length; j++) {
-                const dx = nodes[i].x - nodes[j].x;
-                const dy = nodes[i].y - nodes[j].y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < maxDist) {
-                    connections.push([nodes[i], nodes[j], dist]);
-                }
-            }
-        }
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < MAX_PARTICLES; i++) {
+        const seg = Math.floor(Math.random() * 2);
+        const t = Math.random();
+        const from = seg === 0 ? nodes[0] : nodes[1];
+        const to = seg === 0 ? nodes[1] : nodes[2];
+        const p1 = getNodePos(from);
+        const p2 = getNodePos(to);
+        const x = p1.x + (p2.x - p1.x) * t;
+        const y = p1.y + (p2.y - p1.y) * t;
+        particles.push({
+          segment: seg,
+          t: t,
+          position: { x, y },
+          speed: PARTICLE_SPEED * (0.8 + Math.random() * 0.4),
+        });
+      }
     }
 
-    function drawConnections() {
-        const maxDist = width < 768 ? 110 : 150;
-        for (const conn of connections) {
-            const [nodeA, nodeB, dist] = conn;
-            const opacity = Math.max(0, 1 - dist / maxDist) * 0.4;
-            const lineGrad = ctx.createLinearGradient(nodeA.x, nodeA.y, nodeB.x, nodeB.y);
-            lineGrad.addColorStop(0, `hsla(200, 90%, 65%, ${opacity})`);
-            lineGrad.addColorStop(0.5, `hsla(260, 70%, 70%, ${opacity})`);
-            lineGrad.addColorStop(1, `hsla(320, 80%, 65%, ${opacity})`);
-            ctx.strokeStyle = lineGrad;
-            ctx.lineWidth = 0.8;
-            ctx.beginPath();
-            ctx.moveTo(nodeA.x, nodeA.y);
-            ctx.lineTo(nodeB.x, nodeB.y);
-            ctx.stroke();
+    function updateParticles() {
+      particles.forEach(p => {
+        p.t += p.speed;
+        if (p.t >= 1) {
+          if (p.segment === 0) {
+            p.segment = 1;
+            p.t = 0;
+          } else {
+            p.segment = 0;
+            p.t = 0;
+          }
         }
+        const from = p.segment === 0 ? nodes[0] : nodes[1];
+        const to = p.segment === 0 ? nodes[1] : nodes[2];
+        const p1 = getNodePos(from);
+        const p2 = getNodePos(to);
+        p.position.x = p1.x + (p2.x - p1.x) * p.t;
+        p.position.y = p1.y + (p2.y - p1.y) * p.t;
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+
+      drawEdge(nodes[0], nodes[1]);
+      drawEdge(nodes[1], nodes[2]);
+
+      drawParticles();
+
+      drawNode(nodes[0], '#ffb454');
+      drawNode(nodes[1], '#b79cfa');
+      drawNode(nodes[2], '#4fd1c5');
+
+      ctx.fillStyle = '#576068';
+      ctx.font = `${Math.min(width, height) * 0.025}px "IBM Plex Mono", monospace`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText('source → transform → sink', 16, height - 12);
     }
 
     function animate() {
-        ctx.clearRect(0, 0, width, height);
-
-        for (const node of nodes) {
-            node.update({ width, height });
-        }
-
-        if (Math.floor(Math.random() * 10) === 0) {
-            findConnections();
-        }
-
-        drawConnections();
-
-        for (const pulse of pulses) {
-            pulse.update();
-            pulse.draw(ctx);
-        }
-        pulses = pulses.filter(p => p.active);
-
-        if (pulses.length > 25) {
-            pulses = pulses.slice(-25);
-        }
-
-        for (const node of nodes) {
-            node.draw(ctx);
-        }
-
-        if (Math.random() < 0.02 && connections.length > 0) {
-            createPulseFromRandomConnection();
-        }
-
-        animationId = requestAnimationFrame(animate);
+      updateParticles();
+      draw();
+      requestAnimationFrame(animate);
     }
 
-    window.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-    });
-    window.addEventListener('touchmove', (e) => {
-        if (e.touches.length > 0) {
-            mouseX = e.touches[0].clientX;
-            mouseY = e.touches[0].clientY;
-        }
-    });
-    window.addEventListener('mouseleave', () => {
-        mouseX = -9999;
-        mouseY = -9999;
-    });
-    window.addEventListener('touchend', () => {
-        mouseX = -9999;
-        mouseY = -9999;
-    });
-
-    let resizeTimeout;
     window.addEventListener('resize', () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-            cancelAnimationFrame(animationId);
-            resizeCanvas();
-            animate();
-        }, 200);
+      resize();
+      initParticles();
     });
 
-    document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-            cancelAnimationFrame(animationId);
-        } else {
-            cancelAnimationFrame(animationId);
-            animate();
-        }
-    });
-
-    resizeCanvas();
+    resize();
+    initParticles();
     animate();
+  }
+
+  // ============ LIVE STATS ============
+  const throughputEl = document.getElementById('stat-throughput');
+  const latencyEl = document.getElementById('stat-latency');
+
+  if (throughputEl && latencyEl) {
+    setInterval(() => {
+      const throughput = Math.floor(800 + Math.random() * 400);
+      const latency = Math.floor(80 + Math.random() * 70);
+      throughputEl.textContent = throughput;
+      latencyEl.textContent = latency;
+    }, 1000);
+  }
+
 })();
-
-// ============================================================
-// 2. TYPING ANIMATION
-// ============================================================
-(function initTyping() {
-    const phrases = [
-        'Data Engineering, Reimagined.',
-        'Build Better Data Pipelines.',
-        'Transform Raw Data into Insights.',
-        'Scalable Data Infrastructure.',
-        'Clean Data. Fast Decisions.',
-        'Your Data, Engineered to Scale.',
-    ];
-    const typingElement = document.querySelector('.typing-text');
-    let phraseIndex = 0;
-    let charIndex = 0;
-    let isDeleting = false;
-    let typeSpeed = 70;
-    let deleteSpeed = 40;
-    let pauseBetween = 2000;
-
-    function typeLoop() {
-        const currentPhrase = phrases[phraseIndex];
-
-        if (!isDeleting) {
-            charIndex++;
-            typingElement.textContent = currentPhrase.substring(0, charIndex);
-            if (charIndex === currentPhrase.length) {
-                isDeleting = true;
-                setTimeout(typeLoop, pauseBetween);
-                return;
-            }
-            setTimeout(typeLoop, typeSpeed + Math.random() * 40);
-        } else {
-            charIndex--;
-            typingElement.textContent = currentPhrase.substring(0, charIndex);
-            if (charIndex === 0) {
-                isDeleting = false;
-                phraseIndex = (phraseIndex + 1) % phrases.length;
-                setTimeout(typeLoop, 400);
-                return;
-            }
-            setTimeout(typeLoop, deleteSpeed);
-        }
-    }
-
-    setTimeout(typeLoop, 1200);
-})();
-
-// ============================================================
-// 3. COUNTDOWN TIMER
-// ============================================================
-(function initCountdown() {
-    const launchDate = new Date();
-    launchDate.setDate(launchDate.getDate() + 90);
-    launchDate.setHours(23, 59, 59, 999);
-
-    function updateCountdown() {
-        const now = new Date();
-        const diff = launchDate - now;
-
-        if (diff <= 0) {
-            document.getElementById('cd-days').textContent = '00';
-            document.getElementById('cd-hours').textContent = '00';
-            document.getElementById('cd-minutes').textContent = '00';
-            document.getElementById('cd-seconds').textContent = '00';
-            return;
-        }
-
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
-        document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
-        document.getElementById('cd-minutes').textContent = String(minutes).padStart(2, '0');
-        document.getElementById('cd-seconds').textContent = String(seconds).padStart(2, '0');
-    }
-
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
-})();
-
-// ============================================================
-// 4. EMAIL FORM HANDLER
-// ============================================================
-function handleNotify(event) {
-    event.preventDefault();
-    const emailInput = document.getElementById('email-input');
-    const submitBtn = document.getElementById('submit-btn');
-    const successMsg = document.getElementById('form-success');
-
-    const email = emailInput.value.trim();
-    if (!email || !email.includes('@')) {
-        emailInput.style.borderColor = 'rgba(255, 45, 95, 0.7)';
-        emailInput.style.boxShadow = '0 0 20px rgba(255, 45, 95, 0.25)';
-        setTimeout(() => {
-            emailInput.style.borderColor = 'rgba(255, 255, 255, 0.12)';
-            emailInput.style.boxShadow = 'none';
-        }, 1500);
-        return;
-    }
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
-    submitBtn.style.opacity = '0.6';
-
-    setTimeout(() => {
-        submitBtn.textContent = 'Notify Me ⚡';
-        submitBtn.disabled = false;
-        submitBtn.style.opacity = '1';
-        submitBtn.style.display = 'none';
-        emailInput.style.display = 'none';
-        successMsg.classList.add('show');
-
-        console.log(`📧 Early access request: ${email}`);
-
-        setTimeout(() => {
-            successMsg.classList.remove('show');
-            submitBtn.style.display = 'inline-flex';
-            emailInput.style.display = 'block';
-            emailInput.value = '';
-        }, 6000);
-    }, 1200);
-}
