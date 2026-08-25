@@ -1,161 +1,401 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>InferReach — Data Engineering, Reimagined | Coming Soon</title>
-    <meta name="description" content="InferReach is a data engineering startup building scalable pipelines, automated data quality, and analytics-ready infrastructure. Coming soon." />
-    <meta property="og:title" content="InferReach — Coming Soon" />
-    <meta property="og:description" content="Data Engineering, Reimagined. Scalable pipelines. Automated quality. Analytics ready." />
-    <meta property="og:type" content="website" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inferreach | Real-time data infrastructure</title>
+<meta name="description" content="Inferreach is the control plane for streaming ingestion, transformation, and orchestration. Built for teams who can't afford stale data.">
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <!-- External CSS -->
-    <link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="shortcut icon" href="favicon.svg">
 </head>
 <body>
 
-    <!-- ===== BACKGROUND LAYERS ===== -->
-    <canvas id="particle-canvas"></canvas>
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-    <div class="orb orb-4"></div>
-    <div class="grid-overlay"></div>
-    <div class="noise-overlay"></div>
+<div class="grain"></div>
 
-    <!-- ===== NAVBAR ===== -->
-    <nav class="navbar">
-        <div class="nav-logo">InferReach</div>
-        <a href="mailto:hello@inferreach.com" class="nav-email">
-            <span class="dot"></span>
-            hello@inferreach.com
-        </a>
+<!-- ============ HEADER ============ -->
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="#top" class="brand">
+      <svg class="brand-mark" width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="4" cy="5" r="2.2" stroke="currentColor" stroke-width="1.4"/>
+        <circle cx="4" cy="21" r="2.2" stroke="currentColor" stroke-width="1.4"/>
+        <circle cx="22" cy="13" r="2.4" fill="currentColor"/>
+        <path d="M6 5.5H12C15 5.5 15 13 18.5 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M6 20.5H12C15 20.5 15 13 18.5 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      <span class="brand-name">Inferreach</span>
+    </a>
+
+    <nav class="main-nav" id="main-nav">
+      <a href="#pipeline">Product</a>
+      <a href="#features">Platform</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#integrations">Integrations</a>
+      <a href="#pricing">Pricing</a>
     </nav>
 
-    <!-- ===== MAIN CONTENT ===== -->
-    <div class="main-content">
+    <div class="header-actions">
+      <a href="mailto:hello@inferreach.com" class="header-email">hello@inferreach.com</a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
 
-        <!-- HERO -->
-        <section class="hero">
-            <div class="badge">
-                <span><span class="rocket">🚀</span> Coming Soon</span>
-            </div>
+<main id="top">
 
-            <h1 class="hero-title">InferReach</h1>
+  <!-- ============ HERO ============ -->
+  <section class="hero container">
+    <p class="eyebrow" data-reveal>// real-time data infrastructure</p>
+    <h1 class="hero-title" data-reveal>
+      Move data <br class="br-mobile"> like it's <span class="accent-text">alive</span>.
+    </h1>
+    <p class="hero-lead" data-reveal>
+      Inferreach is the control plane for streaming ingestion, transformation, and
+      orchestration — built for teams who can't afford stale data.
+    </p>
+    <div class="hero-actions" data-reveal>
+      <a href="#start" class="btn btn-primary">Start building — free</a>
+      <a href="#pipeline-visual" class="btn btn-ghost">Watch it flow<span class="arrow-down">↓</span></a>
+    </div>
+  </section>
 
-            <div class="typing-container">
-                <span class="typing-text"></span>
-                <span class="typing-cursor"></span>
-            </div>
+  <!-- ============ LIVE FLOW VISUAL ============ -->
+  <section class="flow-stage" id="pipeline-visual">
+    <div class="flow-frame container">
+      <div class="flow-toolbar">
+        <div class="flow-toolbar-left">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span class="mono-label">LIVE PIPELINE</span>
+          <span class="mono-label dim">/ orders-events-v2</span>
+        </div>
+        <div class="flow-toolbar-right">
+          <div class="flow-stat">
+            <span class="flow-stat-value" id="stat-throughput">0</span>
+            <span class="flow-stat-label">events/sec</span>
+          </div>
+          <div class="flow-stat">
+            <span class="flow-stat-value" id="stat-latency">0</span>
+            <span class="flow-stat-label">ms p99</span>
+          </div>
+        </div>
+      </div>
 
-            <p class="hero-description">
-                We build <strong>scalable data pipelines</strong>, <strong>automated quality systems</strong>,
-                and <strong>analytics-ready infrastructure</strong> for startups that need to move fast
-                without breaking their data.
-            </p>
+      <div class="flow-canvas-wrap">
+        <canvas id="flow-canvas" aria-label="Animated diagram of data flowing through Inferreach's pipeline stages" role="img"></canvas>
+      </div>
 
-            <!-- CTA Buttons -->
-            <div class="cta-group">
-                <a href="https://cal.com/inferreach" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-                    <span class="btn-icon">📅</span> Book a Free Audit
-                </a>
-                <a href="mailto:hello@inferreach.com" class="btn btn-secondary">
-                    <span class="btn-icon">✉️</span> Contact Us
-                </a>
-            </div>
+    </div>
+  </section>
 
-            <!-- Email Notify Form -->
-            <form class="email-form" id="notify-form" onsubmit="handleNotify(event)">
-                <div class="email-input-wrapper">
-                    <input
-                    type="email"
-                    class="email-input"
-                    placeholder="Enter your email for early access..."
-                    required
-                    aria-label="Email address"
-                    id="email-input"
-                    />
-                </div>
-                <button type="submit" class="btn-submit" id="submit-btn">Notify Me ⚡</button>
-                <div class="form-success" id="form-success">
-                    <span>✓</span> You're on the list! We'll be in touch.
-                </div>
-            </form>
+  <!-- ============ STATS BAR ============ -->
+  <section class="stats-bar">
+    <div class="container stats-grid">
+      <div class="stat-block" data-reveal>
+        <span class="stat-number" data-count="99.99" data-suffix="%">0</span>
+        <span class="stat-caption">Uptime, trailing 12 months</span>
+      </div>
+      <div class="stat-block" data-reveal>
+        <span class="stat-number" data-count="4.2" data-suffix="B">0</span>
+        <span class="stat-caption">Events processed daily</span>
+      </div>
+      <div class="stat-block" data-reveal>
+        <span class="stat-number" data-count="118" data-suffix="ms">0</span>
+        <span class="stat-caption">Median end-to-end latency</span>
+      </div>
+      <div class="stat-block" data-reveal>
+        <span class="stat-number" data-count="2600" data-suffix="+">0</span>
+        <span class="stat-caption">Pipelines running right now</span>
+      </div>
+    </div>
+  </section>
 
-            <!-- Countdown -->
-            <div class="countdown" id="countdown">
-                <div class="countdown-item">
-                    <span class="countdown-number" id="cd-days">00</span>
-                    <span class="countdown-label">Days</span>
-                </div>
-                <div class="countdown-item">
-                    <span class="countdown-number" id="cd-hours">00</span>
-                    <span class="countdown-label">Hours</span>
-                </div>
-                <div class="countdown-item">
-                    <span class="countdown-number" id="cd-minutes">00</span>
-                    <span class="countdown-label">Minutes</span>
-                </div>
-                <div class="countdown-item">
-                    <span class="countdown-number" id="cd-seconds">00</span>
-                    <span class="countdown-label">Seconds</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- FEATURES -->
-        <section class="features">
-            <div class="feature-card">
-                <span class="feature-icon">⚡</span>
-                <h3 class="feature-title">Scalable Pipelines</h3>
-                <p class="feature-desc">
-                    ETL/ELT architectures built on modern tools — Airflow, dbt, Spark — designed for
-                    millions of events and real-time streaming.
-                </p>
-            </div>
-            <div class="feature-card">
-                <span class="feature-icon">🔒</span>
-                <h3 class="feature-title">Data Quality at Core</h3>
-                <p class="feature-desc">
-                    Automated testing, anomaly detection, and monitoring baked into every pipeline.
-                    Your data stays clean, reliable, and trustworthy.
-                </p>
-            </div>
-            <div class="feature-card">
-                <span class="feature-icon">📊</span>
-                <h3 class="feature-title">Analytics-Ready</h3>
-                <p class="feature-desc">
-                    Well-modeled data warehouses and lakes that your data team can query immediately —
-                    no more broken dashboards or stale numbers.
-                </p>
-            </div>
-        </section>
-
-        <!-- FOOTER -->
-        <footer class="footer">
-            <div class="footer-links">
-                <a href="mailto:hello@inferreach.com">hello@inferreach.com</a>
-                <a href="https://cal.com/inferreach" target="_blank" rel="noopener noreferrer">cal.com/inferreach</a>
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms</a>
-            </div>
-            <span>© 2026 InferReach. All rights reserved. Built for the data-driven.</span>
-        </footer>
+  <!-- ============ FEATURES ============ -->
+  <section class="features container" id="features">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>// the platform</p>
+      <h2 data-reveal>Everything between source and sink</h2>
+      <p class="section-lead" data-reveal>Six primitives that cover the full lifecycle of a data pipeline: from the moment a row is written to the moment it's queried.</p>
     </div>
 
-    <!-- Scroll Indicator -->
-    <div class="scroll-indicator">
-        <span>Scroll</span>
-        <div class="line"></div>
+    <div class="feature-grid">
+
+      <article class="feature-card" data-reveal>
+        <svg class="feature-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M6 20c4-8 8-8 12 0s8 8 12 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="6" cy="20" r="2" fill="currentColor"/><circle cx="34" cy="20" r="2" fill="currentColor"/></svg>
+        <h3>Streaming ingestion</h3>
+        <p>Connect Kafka, CDC streams, webhooks, or files. Inferreach handles backpressure and exactly-once delivery so nothing is dropped or duplicated.</p>
+      </article>
+
+      <article class="feature-card" data-reveal>
+        <svg class="feature-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="23" y="23" width="10" height="10" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M17 12h6a5 5 0 0 1 5 5v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <h3>SQL &amp; Python transforms</h3>
+        <p>Write transformations as version-controlled models. Inferreach resolves the dependency graph and runs only what changed.</p>
+      </article>
+
+      <article class="feature-card" data-reveal>
+        <svg class="feature-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="20" cy="20" r="3" fill="currentColor"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.6"/><circle cx="32" cy="8" r="2" stroke="currentColor" stroke-width="1.6"/><circle cx="8" cy="32" r="2" stroke="currentColor" stroke-width="1.6"/><circle cx="32" cy="32" r="2" stroke="currentColor" stroke-width="1.6"/><path d="M9.5 9.5 18 18M30.5 9.5 22 18M9.5 30.5 18 22M30.5 30.5 22 22" stroke="currentColor" stroke-width="1.2"/></svg>
+        <h3>DAG orchestration</h3>
+        <p>Schedule, retry, and backfill with a scheduler that understands data dependencies, not just cron times.</p>
+      </article>
+
+      <article class="feature-card" data-reveal>
+        <svg class="feature-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M10 26V14a4 4 0 0 1 4-4h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M30 14v12a4 4 0 0 1-4 4h-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M20 5v10M17 12l3 3 3-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3>Schema registry</h3>
+        <p>Every table and topic carries a contract. Breaking changes are caught and blocked before they reach downstream consumers.</p>
+      </article>
+
+      <article class="feature-card" data-reveal>
+        <svg class="feature-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M5 30 12 18 19 24 27 10 35 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="27" cy="10" r="1.8" fill="currentColor"/></svg>
+        <h3>Lineage &amp; observability</h3>
+        <p>Trace any value back to its source in one click. Freshness, volume, and distribution are monitored on every table automatically.</p>
+      </article>
+
+      <article class="feature-card" data-reveal>
+        <svg class="feature-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect x="8" y="17" width="24" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M13 17v-4a7 7 0 0 1 14 0v4" stroke="currentColor" stroke-width="1.6"/><circle cx="20" cy="25" r="2" fill="currentColor"/></svg>
+        <h3>Governance &amp; access</h3>
+        <p>Column-level masking, row-level policies, and full audit trails — enforced consistently across every pipeline and warehouse.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ ARCHITECTURE / DEEP DIVE ============ -->
+  <section class="architecture" id="architecture">
+    <div class="container architecture-inner">
+      <div class="architecture-copy">
+        <p class="eyebrow" data-reveal>// how it's built</p>
+        <h2 data-reveal>One DAG, every stage</h2>
+        <p class="section-lead" data-reveal>A pipeline is declared once, as code. Inferreach compiles it into a directed graph and runs each stage independently, so a slow transform never blocks a healthy one.</p>
+
+        <ol class="arch-steps">
+          <li data-reveal>
+            <span class="arch-step-index">01</span>
+            <div>
+              <h4>Declare sources</h4>
+              <p>Point at a database, topic, or bucket. Inferreach infers the initial schema and starts tracking drift.</p>
+            </div>
+          </li>
+          <li data-reveal>
+            <span class="arch-step-index">02</span>
+            <div>
+              <h4>Define transforms</h4>
+              <p>Model the shape you want downstream in SQL or Python. Tests run on every commit, not just on deploy.</p>
+            </div>
+          </li>
+          <li data-reveal>
+            <span class="arch-step-index">03</span>
+            <div>
+              <h4>Set delivery guarantees</h4>
+              <p>Choose exactly-once or at-least-once per sink, with configurable checkpointing and replay windows.</p>
+            </div>
+          </li>
+          <li data-reveal>
+            <span class="arch-step-index">04</span>
+            <div>
+              <h4>Ship &amp; observe</h4>
+              <p>Deploy triggers a canary run against sampled traffic. Full lineage and metrics are live from the first row.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="architecture-panel" data-reveal>
+        <div class="code-window">
+          <div class="code-window-bar">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-filename">orders_pipeline.yml</span>
+          </div>
+          <pre class="code-body"><code><span class="c-key">name</span>: <span class="c-str">orders-events-v2</span>
+<span class="c-key">source</span>:
+  <span class="c-key">type</span>: <span class="c-str">kafka</span>
+  <span class="c-key">topic</span>: <span class="c-str">orders.raw</span>
+  <span class="c-key">format</span>: <span class="c-str">avro</span>
+
+<span class="c-key">transform</span>:
+  <span class="c-key">engine</span>: <span class="c-str">sql</span>
+  <span class="c-key">model</span>: <span class="c-str">models/orders_clean.sql</span>
+  <span class="c-key">tests</span>: [<span class="c-str">not_null</span>, <span class="c-str">unique_id</span>]
+
+<span class="c-key">sinks</span>:
+  - <span class="c-key">type</span>: <span class="c-str">warehouse</span>
+    <span class="c-key">target</span>: <span class="c-str">snowflake.analytics.orders</span>
+  - <span class="c-key">type</span>: <span class="c-str">lake</span>
+    <span class="c-key">target</span>: <span class="c-str">s3://lake/orders/</span>
+
+<span class="c-key">delivery</span>: <span class="c-str">exactly_once</span>
+<span class="c-key">schedule</span>: <span class="c-str">continuous</span></code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INTEGRATIONS ============ -->
+  <section class="integrations" id="integrations">
+    <div class="container">
+      <p class="eyebrow center" data-reveal>// connects to what you already run</p>
+      <div class="integration-grid" data-reveal>
+        <span class="integration-pill">Kafka</span>
+        <span class="integration-pill">Snowflake</span>
+        <span class="integration-pill">BigQuery</span>
+        <span class="integration-pill">Postgres</span>
+        <span class="integration-pill">Amazon S3</span>
+        <span class="integration-pill">dbt</span>
+        <span class="integration-pill">Airflow</span>
+        <span class="integration-pill">Redshift</span>
+        <span class="integration-pill">Databricks</span>
+        <span class="integration-pill">MongoDB</span>
+        <span class="integration-pill">Elasticsearch</span>
+        <span class="integration-pill">gRPC</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHY A PROPER PIPELINE MATTERS ============ -->
+  <section class="importance container" id="importance" style="padding-block: 60px;">
+    <div class="section-head" style="max-width: 800px; margin-bottom: 40px;">
+      <p class="eyebrow" data-reveal>// why it matters</p>
+      <h2 data-reveal>A pipeline is the backbone of your data platform</h2>
+      <p class="section-lead" data-reveal>
+        Without a solid, well-orchestrated pipeline, data becomes stale, unreliable, and costly to fix.
+        Inferreach gives you the control plane to ensure <strong>freshness</strong>, <strong>correctness</strong>,
+        and <strong>observability</strong> at every step, so your downstream consumers always get the truth.
+      </p>
+    </div>
+    <div class="importance-grid" data-reveal style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 10px;">
+      <div class="importance-item" style="background: var(--bg-panel); padding: 24px 22px; border-radius: var(--radius-md); border: 1px solid var(--border-soft);">
+        <span style="font-size: 28px; display: block; margin-bottom: 8px;">⚡</span>
+        <h4 style="font-size: 17px; margin-bottom: 6px;">Real‑time freshness</h4>
+        <p style="color: var(--text-muted); font-size: 14px; line-height: 1.5;">Streaming ingestion and incremental transforms mean your dashboards and ML models are always up‑to‑date.</p>
+      </div>
+      <div class="importance-item" style="background: var(--bg-panel); padding: 24px 22px; border-radius: var(--radius-md); border: 1px solid var(--border-soft);">
+        <span style="font-size: 28px; display: block; margin-bottom: 8px;">🔒</span>
+        <h4 style="font-size: 17px; margin-bottom: 6px;">Data integrity</h4>
+        <p style="color: var(--text-muted); font-size: 14px; line-height: 1.5;">Exactly‑once delivery, schema validation, and automated testing catch errors before they reach production.</p>
+      </div>
+      <div class="importance-item" style="background: var(--bg-panel); padding: 24px 22px; border-radius: var(--radius-md); border: 1px solid var(--border-soft);">
+        <span style="font-size: 28px; display: block; margin-bottom: 8px;">🔍</span>
+        <h4 style="font-size: 17px; margin-bottom: 6px;">Full traceability</h4>
+        <p style="color: var(--text-muted); font-size: 14px; line-height: 1.5;">Lineage and audit logs let you pinpoint any anomaly back to its source in seconds, not days.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRICING ============ -->
+  <section class="pricing-section container" id="pricing" style="padding-block: 80px; border-top: 1px solid var(--border-soft);">
+    <div class="section-head" style="max-width: 700px; margin: 0 auto; text-align: center;">
+      <p class="eyebrow center" data-reveal>// pricing</p>
+      <h2 data-reveal>Custom pricing, tailored to your needs</h2>
+      <p class="section-lead" data-reveal style="margin-left: auto; margin-right: auto;">
+        The right infrastructure shouldn't come with a one‑size‑fits‑all price tag.
+        <strong>Pricing depends entirely on the scope of your project</strong> — your data volume, pipeline complexity, and support requirements.
+      </p>
+      <div data-reveal style="margin-top: 30px; display: flex; flex-wrap: wrap; justify-content: center; gap: 18px;">
+        <a href="mailto:hello@inferreach.com" class="btn btn-primary">Email us for a quote →</a>
+        <a href="https://cal.com/inferreach/30min" target="_blank" class="btn btn-ghost">Book a free audit →</a>
+      </div>
+      <p data-reveal style="margin-top: 24px; color: var(--text-dim); font-size: 14px;">
+        ✉️ <a href="mailto:hello@inferreach.com" style="color: var(--text);">hello@inferreach.com</a> &nbsp;·&nbsp; We'll respond within 24 hours.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="cta-section" id="start">
+    <div class="container cta-inner">
+      <div class="cta-copy" data-reveal>
+        <h2>Ship your first pipeline this afternoon</h2>
+        <p>Free for a single pipeline, no credit card. Bring your own Kafka cluster or use ours.</p>
+        <div class="hero-actions">
+          <a href="#" class="btn btn-primary">Start building — free</a>
+          <a href="#" class="link-muted">Talk to an engineer →</a>
+        </div>
+        <div class="cta-contact" style="margin-top: 24px; font-size: 14px; color: var(--text-muted); border-top: 1px solid var(--border-soft); padding-top: 20px;">
+          <span style="display: inline-flex; align-items: center; gap: 8px; margin-right: 24px;">
+            ✉️ <a href="mailto:hello@inferreach.com" style="color: var(--text);">hello@inferreach.com</a>
+          </span>
+          <span style="display: inline-flex; align-items: center; gap: 8px;">
+            📅 <a href="https://cal.com/inferreach/30min" target="_blank" style="color: var(--amber); font-weight: 500;">Book a free audit →</a>
+          </span>
+        </div>
+      </div>
+      <div class="cta-terminal" data-reveal>
+        <div class="code-window">
+          <div class="code-window-bar">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-filename">terminal</span>
+          </div>
+          <pre class="code-body"><code><span class="c-comment">$</span> npm install -g inferreach-cli
+<span class="c-comment">$</span> inferreach init orders-pipeline
+<span class="c-comment">$</span> inferreach run --watch
+<span class="c-ok">✓ connected to kafka.orders.raw</span>
+<span class="c-ok">✓ transform compiled (12 models)</span>
+<span class="c-ok">✓ streaming — 842 events/sec</span><span class="cursor-blink">▌</span></code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <a href="#top" class="brand">
+        <svg class="brand-mark" width="22" height="22" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="4" cy="5" r="2.2" stroke="currentColor" stroke-width="1.4"/>
+          <circle cx="4" cy="21" r="2.2" stroke="currentColor" stroke-width="1.4"/>
+          <circle cx="22" cy="13" r="2.4" fill="currentColor"/>
+          <path d="M6 5.5H12C15 5.5 15 13 18.5 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M6 20.5H12C15 20.5 15 13 18.5 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        <span class="brand-name">Inferreach</span>
+      </a>
+      <p class="footer-tagline">Data infrastructure for teams who can't afford stale data.</p>
+      <div style="margin-top: 12px; display: flex; gap: 20px; flex-wrap: wrap; font-size: 13px;">
+        <a href="mailto:hello@inferreach.com" style="color: var(--text-muted);">✉️ hello@inferreach.com</a>
+        <a href="https://cal.com/inferreach/30min" target="_blank" style="color: var(--amber);">📅 Book a free audit</a>
+      </div>
     </div>
 
-    <!-- External JavaScript -->
-    <script src="script.js"></script>
+    <nav class="footer-col">
+      <h5>Product</h5>
+      <a href="#pipeline-visual">Streaming ingestion</a>
+      <a href="#features">Transforms</a>
+      <a href="#architecture">Orchestration</a>
+      <a href="#pricing">Pricing</a>
+    </nav>
 
+    <nav class="footer-col">
+      <h5>Developers</h5>
+      <a href="#">Documentation</a>
+      <a href="#">CLI reference</a>
+      <a href="#">Status page</a>
+      <a href="#">Changelog</a>
+    </nav>
+
+    <nav class="footer-col">
+      <h5>Company</h5>
+      <a href="#">About</a>
+      <a href="#">Careers</a>
+      <a href="#">Security</a>
+      <a href="#">Contact</a>
+    </nav>
+  </div>
+
+  <div class="container footer-bottom">
+    <span>© 2026 Inferreach Data, Inc.</span>
+    <span class="mono-label dim">status: all systems normal</span>
+  </div>
+</footer>
+
+<script src="app.js"></script>
 </body>
 </html>
